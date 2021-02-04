@@ -1,65 +1,62 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import Head from "next/head";
+import React from "react";
+import styles from "../styles/Home.module.css";
+import { useRouter } from "next/router";
 
 export default function Home() {
+  const [input, setInput] = React.useState("");
+  const [error, setError] = React.useState(false);
+  const router = useRouter();
+  function handleChange(e) {
+    setInput(e.target.value);
+    if (input !== "" || input.includes("https://www.themoviedb.org/tv/")) {
+      setError(false);
+    }
+  }
+  function geraImagem(e) {
+    e.preventDefault();
+    if (input == "" || !input.includes("https://www.themoviedb.org/tv/")) {
+      setError(true);
+      return;
+    }
+    const arrQuery = input.split("/");
+    const query = arrQuery[arrQuery.length - 1].split("-");
+
+    router.push(`/detalhe?id=${query[0]}`);
+  }
   return (
-    <div className={styles.container}>
+    <>
       <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>Gerador de Séries</title>
       </Head>
+      <div className="container">
+        <main className={styles.main}>
+          <h1>Gerador de Séries</h1>
+          <form action="" onSubmit={geraImagem}>
+            <div className={styles.wrapper}>
+              <label>
+                <span>Digite o link do tmdb:</span>
+                <input
+                  type="text"
+                  onChange={handleChange}
+                  value={input}
+                  placeholder="Ex: https://www.themoviedb.org/tv/1438-the-wire"
+                />
+              </label>
+              <button>Gerar Imagem</button>
+            </div>
+            {error && (
+              <p className={styles.error}>
+                Erro: Digite um link válido do tmdb
+              </p>
+            )}
+          </form>
+        </main>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
-  )
+        <footer className={styles.footer}>
+          <h4>2021 - Feito por Thiago Silva</h4>
+        </footer>
+      </div>
+    </>
+  );
 }
