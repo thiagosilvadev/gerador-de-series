@@ -1,7 +1,6 @@
 import React from "react";
 import { useRouter } from "next/router";
-import Link from "next/link";
-import styles from "../styles/detalhe.module.css";
+
 import Head from "next/head";
 const detalhe = () => {
   const router = useRouter();
