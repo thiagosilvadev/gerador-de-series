@@ -26,7 +26,6 @@ const detalhe = () => {
       );
       const jsonCredits = await responseCredits.json();
       setCredits(jsonCredits);
-      console.log(jsonCredits);
 
       /////////////
     }
@@ -36,7 +35,7 @@ const detalhe = () => {
   // const image = `/api/image-generator?id=${router.query.id}`;
 
   if (detail == null || credits == null) return null;
-  console.log(detail);
+
   return (
     <div className="container mx-auto">
       <Head>
