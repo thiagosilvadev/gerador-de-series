@@ -1,38 +1,8 @@
 import React from "react";
-import { useRouter } from "next/router";
 
 import Head from "next/head";
-const detalhe = () => {
-  const router = useRouter();
-  const [credits, setCredits] = React.useState(null);
-  const [detail, setDetail] = React.useState(null);
-  // console.log(router.query);
-  React.useEffect(() => {
-    async function fetchData(id) {
-      //////////////////
-      const responseDetail = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/tv/${id}?api_key=${process.env.NEXT_PUBLIC_API_KEY}&language=pt-BR`
-      );
-      const jsonDetail = await responseDetail.json();
-      setDetail(jsonDetail);
 
-      ////////////
-
-      ////////////////
-
-      const responseCredits = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/tv/${id}/credits?api_key=${process.env.NEXT_PUBLIC_API_KEY}&language=en-US`
-      );
-      const jsonCredits = await responseCredits.json();
-      setCredits(jsonCredits);
-
-      /////////////
-    }
-    fetchData(router.query.id);
-  }, [router.query]);
-
-  // const image = `/api/image-generator?id=${router.query.id}`;
-
+const detalhe = ({ detail, credits, poster_path }) => {
   if (detail == null || credits == null) return null;
 
   return (
@@ -44,7 +14,7 @@ const detalhe = () => {
       <div className="flex mt-12 gap-6">
         <div className="w-3/12">
           <img
-            src={`https://www.themoviedb.org/t/p/w600_and_h900_bestv2${detail.poster_path}`}
+            src={`https://www.themoviedb.org/t/p/w600_and_h900_bestv2${poster_path}`}
             alt=""
             className="rounded"
           />
@@ -105,5 +75,30 @@ const detalhe = () => {
     </div>
   );
 };
+
+export async function getServerSideProps(context) {
+  const resDetail = await fetch(
+    `${process.env.BASE_URL}/tv/${context.query.id}?api_key=${process.env.API_KEY}&language=pt-BR`
+  );
+  const detail = await resDetail.json();
+
+  const resEngDetail = await fetch(
+    `${process.env.BASE_URL}/tv/${context.query.id}?api_key=${process.env.API_KEY}&language=en-US`
+  );
+  const engDetail = await resEngDetail.json();
+
+  const resCredits = await fetch(
+    `${process.env.BASE_URL}/tv/${context.query.id}/credits?api_key=${process.env.API_KEY}&language=en-US`
+  );
+  const credits = await resCredits.json();
+
+  return {
+    props: {
+      detail,
+      credits,
+      poster_path: engDetail.poster_path,
+    },
+  };
+}
 
 export default detalhe;
