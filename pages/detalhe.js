@@ -2,24 +2,16 @@ import React from "react";
 
 import Head from "next/head";
 
-const detalhe = ({ detail, credits, poster_path }) => {
+const detalhe = ({ detail, credits }) => {
   if (detail == null || credits == null) return null;
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto px-2 md:px-0">
       <Head>
         <title>{detail.original_name} | Gerador de Séries</title>
       </Head>
 
       <div className="flex mt-12 gap-6">
-        <div className="w-3/12">
-          <img
-            src={`https://www.themoviedb.org/t/p/w600_and_h900_bestv2${poster_path}`}
-            alt=""
-            className="rounded"
-          />
-        </div>
-
         <div>
           <h1 className="font-bold text-6xl mb-6">{detail.original_name}</h1>
           <p>
@@ -50,7 +42,7 @@ const detalhe = ({ detail, credits, poster_path }) => {
       </div>
       <div className="mt-12">
         <h1 className="font-bold text-4xl mb-6">Elenco</h1>
-        <div className="grid grid-cols-6 auto-rows-min gap-4 gap-y-6 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 auto-rows-min gap-4 gap-y-6 mb-6">
           {credits.cast &&
             credits.cast.map((cast) => (
               <div
@@ -58,9 +50,9 @@ const detalhe = ({ detail, credits, poster_path }) => {
                 className="flex flex-col items-center justify-start border w-full rounded "
               >
                 <img
-                  src={`https://www.themoviedb.org/t/p/h632${cast.profile_path}`}
+                  src={`https://www.themoviedb.org/t/p/w138_and_h175_face${cast.profile_path}`}
                   alt=""
-                  className="w-full h-42 object-cover"
+                  className="w-full h-auto object-cover"
                 />
                 <div className="px-2 text-center">
                   <h1 className="font-medium mt-4">{cast.character}</h1>
@@ -82,11 +74,6 @@ export async function getServerSideProps(context) {
   );
   const detail = await resDetail.json();
 
-  const resEngDetail = await fetch(
-    `${process.env.BASE_URL}/tv/${context.query.id}?api_key=${process.env.API_KEY}&language=en-US`
-  );
-  const engDetail = await resEngDetail.json();
-
   const resCredits = await fetch(
     `${process.env.BASE_URL}/tv/${context.query.id}/credits?api_key=${process.env.API_KEY}&language=en-US`
   );
@@ -96,7 +83,6 @@ export async function getServerSideProps(context) {
     props: {
       detail,
       credits,
-      poster_path: engDetail.poster_path,
     },
   };
 }
